@@ -1,12 +1,16 @@
-# tree-sitter grammar for roc
-## installing
-Reference it from your editor somehow.
-//TODO
+# tree-sitter-roc
+Roc grammar for tree-sitter. Forked from [faldor20/tree-sitter-roc](https://github.com/faldor20/tree-sitter-roc)
+
+## References
+* [Tree-sitter Introduction](https://tree-sitter.github.io/tree-sitter/)
+* [Roc](https://www.roc-lang.org/)
+
+## Installation
 ### Helix
-My full config for roc is below: 
+Example configuration.  See [Adding new languages to Helix](https://docs.helix-editor.com/guides/adding_languages.html)
 ```toml
 [language-server.roc-ls]
-command = "roc_ls"
+command = "roc_lang_server"
 
 [[language]]
 name = "roc"
@@ -27,27 +31,36 @@ indent = { tab-width = 2, unit = "  " }
 [[grammar]]
 
 name = "roc"
-source = { git = "https://github.com/faldor20/tree-sitter-roc.git", rev = "2c985e01fd1eae1e8ce0d52b084a6b555c26048e" }
+source.git = "https://github.com/adkelley/tree-sitter-roc"
+source.rev = "<<sha hash of the latest commit goes here>>"
 ```
+
+After updating your `language.toml` file.  Do the following:
+
+1. Build up on the shell
+```
+$ hx -g fetch
+$ hx -g build
+```
+
+2.  Make a queries directory and copy the query files to this directory.  
+```
+$ mkdir -p $HELIX/runtime/queries/roc # make your queries directory for roc
+$ cp -r $HELIX/runtime/grammars/sources/roc/queries $HELIX/runtime/queries/roc
+```
+Note `$HELIX` typically points to `~/.config/helix`
+
 ### Neovim
 Add the code in `neovim/roc.lua` to your config somewhere.
 Copy the folder `neovim/queries` to your neovim config at `after/` or in a custom neovim plugin at its root directory `./`
 eg: `after/queries/roc/highlights.lua`or `my_roc_plugin/queries/roc/highlights.lua`
+
 ### Emacs
 A [package providing a major mode for Roc](https://gitlab.com/tad-lispy/roc-mode "Emacs Roc mode") is under development.
-## contributing
+## Contributing
 ### Setup
-#### Nix
-Currently i use nix for development so to start the dev environment in nix run 
-```bash
-nix develop
-```
-I've had some odd issues with the system version of libc being incompatible with my version of treesitter. if tree-sitter is spitting out weird errors try running it in an isolated environments
-```bash
-nix develop -i
-````
-#### Not Nix
-If you are outside of nix.
+Creating language parsers is not for the faint of heart.  However, if you must, see [Creating parsers](https://tree-sitter.github.io/tree-sitter/creating-parsers) to get started.
+
 You will need:
 1. The tree-sitter cli, which will be installed when you run `npm install`
 2. A c compiler like gcc or clang
@@ -58,7 +71,7 @@ Once you've made a change, to test it, run:
 tree-sitter generate
 tree-sitter test 
 ```
-if you add a new feature you should add a test to one of the test files in `test/corpus/*.txt`
+If you add a new feature you should add a test to one of the test files in `test/corpus/*.txt`
 once you are happy with you changes run 
 
 ```bash
